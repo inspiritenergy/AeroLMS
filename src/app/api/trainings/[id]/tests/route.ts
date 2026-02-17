@@ -185,7 +185,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const test = await prisma.$transaction(async (tx) => {
       // BUSINESS RULE: Only one active test per training
       // When creating a new active test, deactivate all other tests for the same training
-      // This ensures workers see only one test at a time
+      // This ensures employees see only one test at a time
       await tx.inspiritTest.updateMany({
         where: {
           trainingId,

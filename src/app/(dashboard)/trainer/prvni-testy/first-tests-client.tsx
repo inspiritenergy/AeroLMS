@@ -64,18 +64,14 @@ export function FirstTestsClient() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Fetch users
+  // Fetch users - all roles (ALL employees can have required trainings)
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('/api/users');
+        const response = await fetch('/api/users?context=first-tests');
         if (response.ok) {
           const data = await response.json();
-          // Filtrovat pouze WORKER uživatele na klientu
-          const workers = (data.users || []).filter(
-            (user: any) => user.role === 'WORKER'
-          );
-          setUsers(workers);
+          setUsers(data.users || []);
         }
       } catch {
         // Error silently handled via UI state

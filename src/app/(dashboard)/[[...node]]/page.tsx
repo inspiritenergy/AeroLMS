@@ -52,8 +52,8 @@ export default async function DynamicPage({ params }: PageProps) {
       redirect('/login');
     }
 
-    // RBAC: Pro WORKER načti seznam školení s přiřazeným školitelem
-    // Školení bez školitele se workerům nezobrazují
+    // RBAC: Pro všechny role načti seznam školení s přiřazeným školitelem
+    // Školení bez školitele se zaměstnancům nezobrazují
     const trainingsWithTrainer = await prisma.inspiritTrainingAssignment.findMany({
       where: {
         deletedAt: null
@@ -94,7 +94,7 @@ export default async function DynamicPage({ params }: PageProps) {
       (t: any) => t.required && trainingsWithTrainerIds.has(t.id)
     );
 
-    // Spočítej statistiky ze skutečných dat (podle role - WORKER vidí jen požadovaná)
+    // Spočítej statistiky ze skutečných dat (všechny role vidí jen požadovaná)
     const now = new Date();
     const requiredTrainings = filteredTrainings.filter(
       (t: any) => t.required
@@ -202,7 +202,7 @@ export default async function DynamicPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Tabulka školení - WORKER vidí pouze požadovaná (Pozadovano=TRUE) */}
+          {/* Tabulka školení - všechny role vidí pouze požadovaná (Pozadovano=TRUE) */}
           <TrainingsTable trainings={filteredTrainings} />
         </div>
       </PageContainer>

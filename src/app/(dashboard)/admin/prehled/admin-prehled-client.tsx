@@ -737,12 +737,12 @@ export default function AdminPrehledClient() {
           </CardContent>
         </Card>
 
-        {/* Tabulka přiřazení školení pracovníkům */}
+        {/* Tabulka přiřazení školení zaměstnancům */}
         <Card className="min-w-0 max-w-full">
           <CardHeader>
             <CardTitle className='flex items-center gap-2'>
               <Users className='h-5 w-5' />
-              Správa přiřazení požadovaných školení pracovníkům
+              Správa přiřazení požadovaných školení zaměstnancům
             </CardTitle>
             <CardDescription>
               Editace požadavků na školení a termínů pro jednotlivé uživatele
@@ -813,19 +813,17 @@ export default function AdminPrehledClient() {
                 </TableRow>
               </TableHeader>
                 <TableBody>
-                  {users.filter((u) => u.role === 'WORKER').length === 0 ? (
+                  {users.length === 0 ? (
                     <TableRow>
                       <TableCell
                         colSpan={7}
                         className='text-muted-foreground text-center'
                       >
-                        Žádní pracovníci
+                        Žádní zaměstnanci
                       </TableCell>
                     </TableRow>
                   ) : (
-                    users
-                      .filter((u) => u.role === 'WORKER')
-                      .map((user) => {
+                    users.map((user) => {
                         const training = selectedTraining;
 
                         // Získat hodnoty pro vybrané školení

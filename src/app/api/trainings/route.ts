@@ -77,8 +77,8 @@ export async function GET(request: Request) {
       }
     });
 
-    // RBAC: Pro WORKER načti seznam školení s přiřazeným školitelem
-    // Školení bez školitele se workerům nezobrazují
+    // RBAC: Pro všechny role načti seznam školení s přiřazeným školitelem
+    // Školení bez školitele se zaměstnancům nezobrazují
     const trainingsWithTrainer = await prisma.inspiritTrainingAssignment.findMany({
       where: {
         deletedAt: null

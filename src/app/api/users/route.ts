@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { isAdmin, isTrainer, ROLES } from '@/types/roles';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     // Ověření přihlášení
     const session = await getServerSession(authOptions);
@@ -24,12 +24,15 @@ export async function GET() {
       );
     }
 
-    // Načíst uživatele - školitelé vidí pouze zaměstnance
+    const { searchParams } = new URL(request.url);
+    const context = searchParams.get('context');
+
+    // Načíst uživatele
     // IMPORTANT: Use raw SQL to get dynamic training columns (_*Pozadovano, _*DatumPosl, _*DatumPristi)
     let rawUsers: any[];
 
-    if (isTrainer(session.user.role)) {
-      // Školitelé vidí pouze WORKER
+    if (isTrainer(session.user.role) && context !== 'first-tests') {
+      // Školitelé vidí pouze WORKER (výchozí kontext)
       rawUsers = await prisma.$queryRaw<any[]>`
         SELECT * FROM InspiritCisZam
         WHERE role = ${ROLES.WORKER}
@@ -37,6 +40,7 @@ export async function GET() {
       `;
     } else {
       // Admins vidí všechny uživatele
+      // Školitelé v kontextu "first-tests" vidí všechny (všechny role mají povinná školení)
       rawUsers = await prisma.$queryRaw<any[]>`
         SELECT * FROM InspiritCisZam
         ORDER BY Cislo ASC

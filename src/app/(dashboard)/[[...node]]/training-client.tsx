@@ -116,7 +116,7 @@ export function TrainingClient({
         return;
       }
 
-      // Get the first (and only for WORKER) active test
+      // Get the first active test (all roles see only active test in employee view)
       const activeTest = testsData.tests[0];
 
       // Try to start test attempt
@@ -211,7 +211,7 @@ export function TrainingClient({
         return;
       }
 
-      // Get the first (and only for WORKER) active test
+      // Get the first active test (all roles see only active test in employee view)
       const activeTest = testsData.tests[0];
 
       // Try to start test attempt

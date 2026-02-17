@@ -153,7 +153,7 @@ export function ResultsClient() {
       try {
         // Fetch users, trainings in parallel
         const [usersRes, trainingsRes] = await Promise.all([
-          fetch('/api/users'),
+          fetch('/api/users?context=first-tests'),
           fetch('/api/trainings?admin=true')
         ]);
 
