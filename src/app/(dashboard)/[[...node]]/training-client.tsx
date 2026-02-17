@@ -108,7 +108,10 @@ export function TrainingClient({
     try {
       // First fetch available tests
       const testsResponse = await fetch(`/api/trainings/${training.id}/tests?employee=true`);
-      if (!testsResponse.ok) throw new Error('Failed to fetch tests');
+      if (!testsResponse.ok) {
+        const errData = await testsResponse.json().catch(() => ({}));
+        throw new Error(errData.error || `Chyba při načítání testů (${testsResponse.status})`);
+      }
       const testsData = await testsResponse.json();
 
       if (!testsData.tests || testsData.tests.length === 0) {
@@ -160,8 +163,11 @@ export function TrainingClient({
       setAttemptId(startData.attemptId);
       setViewMode('test');
       toast.success('Test byl úspěšně spuštěn');
-    } catch {
-      toast.error('Nepodařilo se spustit test');
+    } catch (error) {
+      console.error('Failed to start test:', error);
+      toast.error('Nepodařilo se spustit test', {
+        description: error instanceof Error ? error.message : 'Zkuste to prosím znovu nebo kontaktujte administrátora.'
+      });
     }
   };
 
@@ -186,8 +192,11 @@ export function TrainingClient({
       } else {
         toast.error('Test nebyl úspěšný. Zkuste to prosím znovu.');
       }
-    } catch {
-      toast.error('Nepodařilo se odeslat test');
+    } catch (error) {
+      console.error('Failed to submit test:', error);
+      toast.error('Nepodařilo se odeslat test', {
+        description: error instanceof Error ? error.message : 'Zkuste to prosím znovu.'
+      });
     }
   };
 
@@ -203,7 +212,10 @@ export function TrainingClient({
     try {
       // First fetch available tests
       const testsResponse = await fetch(`/api/trainings/${training.id}/tests?employee=true`);
-      if (!testsResponse.ok) throw new Error('Failed to fetch tests');
+      if (!testsResponse.ok) {
+        const errData = await testsResponse.json().catch(() => ({}));
+        throw new Error(errData.error || `Chyba při načítání testů (${testsResponse.status})`);
+      }
       const testsData = await testsResponse.json();
 
       if (!testsData.tests || testsData.tests.length === 0) {
@@ -271,8 +283,11 @@ export function TrainingClient({
       setAttemptId(startData.attemptId);
       setViewMode('test');
       toast.success('Test byl úspěšně spuštěn znovu');
-    } catch {
-      toast.error('Nepodařilo se znovu spustit test');
+    } catch (error) {
+      console.error('Failed to retry test:', error);
+      toast.error('Nepodařilo se znovu spustit test', {
+        description: error instanceof Error ? error.message : 'Zkuste to prosím znovu nebo kontaktujte administrátora.'
+      });
     }
   };
 

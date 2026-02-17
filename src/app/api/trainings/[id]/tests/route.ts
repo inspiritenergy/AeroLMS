@@ -37,9 +37,22 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       );
     }
 
+    // Get user to check role
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(session.user.id) },
+      select: { role: true }
+    });
+
+    // Zaměstnanecký pohled (?employee=true) - pouze aktivní testy (pro vyplňování)
+    // Management pohled (bez ?employee) - WORKER vidí jen aktivní, ADMIN/TRAINER vidí všechny
+    const url = new URL(request.url);
+    const isEmployeeView = url.searchParams.get('employee') === 'true';
+
     // SECURITY: Validate trainer has access to this training
+    // Only check assignment for MANAGEMENT view - employee view is accessible to all roles
+    // (trainers can be required to take trainings they don't manage)
     const userRole = session.user.role;
-    if (isTrainer(userRole)) {
+    if (isTrainer(userRole) && !isEmployeeView) {
       const hasAccess = await isTrainerAssignedToTraining(
         parseInt(session.user.id),
         trainingId
@@ -51,17 +64,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         );
       }
     }
-
-    // Get user to check role
-    const user = await prisma.user.findUnique({
-      where: { id: parseInt(session.user.id) },
-      select: { role: true }
-    });
-
-    // Zaměstnanecký pohled (?employee=true) - pouze aktivní testy (pro vyplňování)
-    // Management pohled (bez ?employee) - WORKER vidí jen aktivní, ADMIN/TRAINER vidí všechny
-    const url = new URL(request.url);
-    const isEmployeeView = url.searchParams.get('employee') === 'true';
 
     const whereClause =
       isEmployeeView || user?.role === 'WORKER'

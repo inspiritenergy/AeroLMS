@@ -195,9 +195,10 @@ export async function POST(
       testId: testId,
       message: 'Test started successfully'
     });
-  } catch {
+  } catch (error) {
+    console.error('Failed to start test:', error);
     return NextResponse.json(
-      { error: 'Failed to start test' },
+      { error: 'Failed to start test', detail: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }
