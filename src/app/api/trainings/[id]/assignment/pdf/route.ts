@@ -239,35 +239,19 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Find the assignment with PDF
-    // For workers: find any assignment for this training that has a PDF
-    // For trainers: find their specific assignment
-    // For admins: find any assignment with a PDF
-    let assignment;
-
-    if (isTrainer(session.user.role) && !isAdmin(session.user.role)) {
-      // Trainer sees their own uploaded PDF
-      assignment = await prisma.inspiritTrainingAssignment.findFirst({
-        where: {
-          trainingId: trainingId,
-          trainerId: parseInt(session.user.id),
-          deletedAt: null,
-          pdfFileName: { not: null }
-        }
-      });
-    } else {
-      // Workers and admins see any available PDF for this training
-      assignment = await prisma.inspiritTrainingAssignment.findFirst({
-        where: {
-          trainingId: trainingId,
-          deletedAt: null,
-          pdfFileName: { not: null }
-        },
-        orderBy: {
-          pdfUploadedAt: 'desc' // Get the most recently uploaded PDF
-        }
-      });
-    }
+    // Find the assignment with PDF for this training
+    // Business rule: one trainer per training, so there's only one PDF per training
+    // All roles (including trainers in employee view) should see the training's PDF
+    const assignment = await prisma.inspiritTrainingAssignment.findFirst({
+      where: {
+        trainingId: trainingId,
+        deletedAt: null,
+        pdfFileName: { not: null }
+      },
+      orderBy: {
+        pdfUploadedAt: 'desc'
+      }
+    });
 
     if (!assignment || !assignment.pdfFileName) {
       return NextResponse.json(
