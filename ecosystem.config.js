@@ -85,7 +85,7 @@ module.exports = {
 
       // Git repository
       ref: 'origin/master',
-      repo: 'https://github.com/ondrejchladek/AeroLMS.git',
+      repo: 'https://github.com/inspiritenergy/AeroLMS.git',
 
       // Deployment path on server
       path: 'C:/inetpub/wwwroot',

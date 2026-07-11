@@ -1703,7 +1703,7 @@ If Prisma cannot connect to SQL Server:
 1. **Clone Repository**
    ```powershell
    cd C:\inetpub\wwwroot
-   git clone https://github.com/ondrejchladek/AeroLMS.git
+   git clone https://github.com/inspiritenergy/AeroLMS.git
    cd AeroLMS
    ```
 
