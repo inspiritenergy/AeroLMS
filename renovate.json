@@ -1,0 +1,5 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Renovate explicitne vypnut - ops/sandbox/assets repo mimo ADR 0042 scope (dep updates ridi jen app repa)",
+  "enabled": false
+}
