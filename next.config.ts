@@ -3,6 +3,9 @@ import { withSentryConfig } from '@sentry/nextjs';
 
 // Define the base Next.js configuration
 const baseConfig: NextConfig = {
+  // Kontejnerové nasazení (Dockerfile) staví samostatný server; nasazení přes
+  // PM2 a `next start` proměnnou nenastavuje a chová se jako dosud.
+  output: process.env.NEXT_OUTPUT === 'standalone' ? 'standalone' : undefined,
   images: {
     remotePatterns: [
       {

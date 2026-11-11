@@ -134,6 +134,7 @@ export const config = {
     /*
      * Match all request paths except:
      * - api/auth (auth endpoints)
+     * - api/health (liveness sonda bez přihlášení, nevrací žádná data)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico, robots.txt, sitemap.xml (metadata files)
@@ -141,7 +142,7 @@ export const config = {
      * - public assets (fonts: .otf, .ttf, .woff, .woff2)
      * - login page
      */
-    '/((?!api/auth|_next/static|_next/image|favicon\\.ico|robots\\.txt|sitemap\\.xml|login|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|otf|ttf|woff|woff2)).*)',
+    '/((?!api/auth|api/health|_next/static|_next/image|favicon\\.ico|robots\\.txt|sitemap\\.xml|login|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|otf|ttf|woff|woff2)).*)',
     '/'
   ]
 };

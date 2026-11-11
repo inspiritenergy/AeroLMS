@@ -1,0 +1,29 @@
+# Do obrazu patří jen zdrojový kód a skripty nasazení.
+.git
+.github
+node_modules
+.next
+out
+build
+coverage
+
+# Lokální prostředí a tajemství
+.env*
+*.pem
+
+# Data a nahrané soubory do obrazu nikdy nepatří
+data_nesahat_necist
+uploads
+
+# Nasazení u zákazníka (Windows Server, PM2, IIS)
+web.config
+ecosystem.config.js
+
+# Vývojářské a editorové soubory
+.claude
+.idea
+.vscode
+.playwright-mcp
+*.md
+*.tsbuildinfo
+npm-debug.log*
