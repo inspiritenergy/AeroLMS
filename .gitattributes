@@ -1,0 +1,3 @@
+# Shellové skripty běží v linuxových kontejnerech: konce řádků vždy LF,
+# i když si repozitář někdo stáhne na Windows s automatickým převodem.
+*.sh text eol=lf

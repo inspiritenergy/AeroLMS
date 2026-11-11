@@ -1,0 +1,20 @@
+# AeroLMS - jednorázový kontejner inicializace databáze předváděcí instance.
+#
+# Vychází ze stejného obrazu jako databázový server (obsahuje sqlcmd) a nese jen
+# skripty SQL: simulaci Heliosu, předváděcí data a PRODUKČNÍ skripty deployment/sql
+# beze změny. Spouští deployment/demo/init-db.sh a skončí.
+#
+# Build kontext je kořen repozitáře (viz docker-compose.demo.yaml).
+
+ARG MSSQL_IMAGE=mcr.microsoft.com/mssql/server:2022-CU27-ubuntu-22.04
+FROM ${MSSQL_IMAGE}
+
+USER root
+RUN mkdir -p /opt/aerolms/sql /opt/aerolms/demo/sql
+COPY deployment/sql/ /opt/aerolms/sql/
+COPY deployment/demo/sql/ /opt/aerolms/demo/sql/
+COPY --chmod=0755 deployment/demo/init-db.sh /opt/aerolms/demo/init-db.sh
+RUN chown -R mssql:root /opt/aerolms
+
+USER mssql
+ENTRYPOINT ["/bin/bash", "/opt/aerolms/demo/init-db.sh"]

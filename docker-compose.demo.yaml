@@ -1,0 +1,98 @@
+# AeroLMS - předváděcí instance (Coolify, build pack dockercompose).
+#
+# Samostatná instance bez přístupu k podnikovému Heliosu. Místo něj běží vlastní
+# SQL Server se simulovanými tabulkami Heliosu a smyšlenými daty. Nasazení
+# u zákazníka (Windows Server, PM2, IIS, databáze Helios003 v podnikové síti)
+# tento soubor nepoužívá.
+#
+# Služby:
+#   mssql    - SQL Server 2022, edice Express (zdarma i pro provoz). Port se
+#              nepublikuje, databáze je dostupná jen uvnitř sítě stacku.
+#   db-init  - jednorázový kontejner: simulace Heliosu, produkční skripty
+#              deployment/sql/02-10 beze změny, předváděcí data, přihlášení aplikace.
+#              Opakované nasazení data nepřepíše; DEMO_RESET=true je vrátí do
+#              výchozího stavu.
+#   web      - aplikace (Next.js standalone). Doménu jí přiřazuje Coolify (Traefik).
+#
+# Tajemství se do repozitáře nezapisují:
+#   - SERVICE_PASSWORD_*, SERVICE_BASE64_* generuje Coolify při prvním nasazení
+#   - DEMO_*_PASSWORD (hesla předváděcích účtů) nastavuje provozovatel v Coolify
+#
+# Bez top-level `name:` - název stacku určuje Coolify.
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-CU27-ubuntu-22.04
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Express
+      MSSQL_SA_PASSWORD: ${SERVICE_PASSWORD_MSSQLSA}
+      MSSQL_COLLATION: Czech_CI_AS
+      # Strop paměti databázového stroje. Limit kontejneru níže musí zůstat nad
+      # 2 GB, jinak SQL Server odmítne nastartovat.
+      MSSQL_MEMORY_LIMIT_MB: ${MSSQL_MEMORY_LIMIT_MB:-1024}
+      TZ: Europe/Prague
+    volumes:
+      - aerolms-mssql:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S 127.0.0.1 -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -b -l 5 -Q 'SELECT 1' >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    stop_grace_period: 30s
+    mem_limit: 2200m
+
+  db-init:
+    build:
+      context: .
+      dockerfile: deployment/demo/Dockerfile.db-init
+    restart: "no"
+    # Jednorázový kontejner po doběhnutí skončí; Coolify ho nezapočítává do stavu aplikace.
+    exclude_from_hc: true
+    environment:
+      MSSQL_HOST: mssql
+      MSSQL_SA_PASSWORD: ${SERVICE_PASSWORD_MSSQLSA}
+      APP_DB_PASSWORD: ${SERVICE_PASSWORD_AEROLMSDB}
+      DEMO_ADMIN_PASSWORD: ${DEMO_ADMIN_PASSWORD}
+      DEMO_TRAINER_PASSWORD: ${DEMO_TRAINER_PASSWORD}
+      DEMO_WORKER_PASSWORD: ${DEMO_WORKER_PASSWORD}
+      DEMO_RESET: ${DEMO_RESET:-false}
+    depends_on:
+      mssql:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      target: web
+    restart: unless-stopped
+    expose:
+      - "3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: sqlserver://mssql:1433;database=Helios003;user=AeroLMS;password=${SERVICE_PASSWORD_AEROLMSDB};encrypt=true;trustServerCertificate=true
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXTAUTH_SECRET: ${SERVICE_BASE64_64_NEXTAUTH}
+      NEXT_PUBLIC_SENTRY_DISABLED: "true"
+      FILE_STORAGE_PATH: /data/uploads
+      FILE_MAX_SIZE_MB: ${FILE_MAX_SIZE_MB:-25}
+      TZ: Europe/Prague
+    volumes:
+      - aerolms-uploads:/data/uploads
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    stop_grace_period: 10s
+    mem_limit: 512m
+
+volumes:
+  aerolms-mssql:
+  aerolms-uploads:
