@@ -36,11 +36,26 @@ for name in MSSQL_SA_PASSWORD APP_DB_PASSWORD DEMO_ADMIN_PASSWORD DEMO_TRAINER_P
   [ -n "${!name:-}" ] || fail "proměnná $name není nastavena"
 done
 
-# Hesla se dosazují do SQL jako proměnné sqlcmd. Povolená abeceda vylučuje znaky,
-# které by změnily význam SQL nebo připojovacího řetězce.
-for name in APP_DB_PASSWORD DEMO_ADMIN_PASSWORD DEMO_TRAINER_PASSWORD DEMO_WORKER_PASSWORD; do
-  [[ "${!name}" =~ ^[A-Za-z0-9_.-]{8,64}$ ]] || fail "$name smí obsahovat jen písmena, číslice a znaky _ . - (8 až 64 znaků)"
-done
+# Heslo přihlášení aplikace se dosazuje do SQL a do připojovacího řetězce jako text.
+# Povolená abeceda vylučuje znaky, které by změnily jejich význam. Generuje ho Coolify.
+[[ "$APP_DB_PASSWORD" =~ ^[A-Za-z0-9_.-]{8,64}$ ]] || fail "APP_DB_PASSWORD smí obsahovat jen písmena, číslice a znaky _ . - (8 až 64 znaků)"
+
+# Hesla předváděcích účtů volí provozovatel a smí obsahovat libovolné znaky. Do SQL
+# se proto předávají zakódovaná šestnáctkově (UTF-16LE): v textu SQL jsou z nich jen
+# znaky 0-9 a a-f. Výsledek se vrací v proměnné HEX.
+hex_utf16() {
+  local name="$1" value="${!1}" units
+  [[ "$value" =~ [[:cntrl:]] ]] && fail "$name obsahuje řídicí znak (konec řádku, tabulátor)"
+  HEX="$(printf '%s' "$value" | iconv -f UTF-8 -t UTF-16LE | od -An -v -tx1 | tr -d ' \n')" \
+    || fail "$name není platný text v UTF-8"
+  [[ "$HEX" =~ ^([0-9a-f]{4})+$ ]] || fail "$name se nepodařilo zakódovat"
+  units=$(( ${#HEX} / 4 ))
+  [ "$units" -ge 8 ] && [ "$units" -le 64 ] || fail "$name musí mít 8 až 64 znaků"
+}
+hex_utf16 DEMO_ADMIN_PASSWORD;   DEMO_ADMIN_PASSWORD_HEX="$HEX"
+hex_utf16 DEMO_TRAINER_PASSWORD; DEMO_TRAINER_PASSWORD_HEX="$HEX"
+hex_utf16 DEMO_WORKER_PASSWORD;  DEMO_WORKER_PASSWORD_HEX="$HEX"
+unset HEX
 
 export SQLCMDPASSWORD="$MSSQL_SA_PASSWORD"
 
@@ -83,9 +98,9 @@ employees="$(scalar "$DB" "SELECT COUNT(*) FROM dbo.TabCisZam")"
 if [ "$employees" = "0" ]; then
   log "plním předváděcí data"
   run_sql -d "$DB" -i "$DEMO_SQL_DIR/90_demo_seed.sql" \
-    -v DEMO_ADMIN_PASSWORD="$DEMO_ADMIN_PASSWORD" \
-       DEMO_TRAINER_PASSWORD="$DEMO_TRAINER_PASSWORD" \
-       DEMO_WORKER_PASSWORD="$DEMO_WORKER_PASSWORD"
+    -v DEMO_ADMIN_PASSWORD_HEX="$DEMO_ADMIN_PASSWORD_HEX" \
+       DEMO_TRAINER_PASSWORD_HEX="$DEMO_TRAINER_PASSWORD_HEX" \
+       DEMO_WORKER_PASSWORD_HEX="$DEMO_WORKER_PASSWORD_HEX"
 else
   log "databáze už obsahuje $employees zaměstnanců, předváděcí data nechávám beze změny"
 fi

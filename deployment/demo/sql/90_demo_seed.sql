@@ -15,8 +15,13 @@
  *     od dne naplnění, takže přehledy ukazují platná, brzy končící i prošlá školení
  *   - historii prezenčních zkoušek a certifikáty
  *
- * Hesla účtů přicházejí z proměnných sqlcmd (-v), do repozitáře se nezapisují:
- *   DEMO_ADMIN_PASSWORD, DEMO_TRAINER_PASSWORD, DEMO_WORKER_PASSWORD
+ * Hesla účtů přicházejí z proměnných sqlcmd (-v), do repozitáře se nezapisují.
+ * Skript init-db.sh je předává zakódovaná šestnáctkově (UTF-16LE):
+ *   DEMO_ADMIN_PASSWORD_HEX, DEMO_TRAINER_PASSWORD_HEX, DEMO_WORKER_PASSWORD_HEX
+ *
+ * Přihlášení: administrátor admin@, školitel skolitel@ (druhý školitel
+ * skolitel.bozp@), pracovník pracovnik@ nebo osobní číslo 100101; ostatní
+ * pracovníci osobním číslem. Doména lms.inspiritenergy.cz.
  *
  * Skript odmítne běžet nad databází, která už zaměstnance obsahuje.
  ******************************************************************************/
@@ -80,24 +85,30 @@ CREATE TABLE #Zam (
     Stav     CHAR(1) NOT NULL
 );
 
+-- Hesla přicházejí zakódovaná šestnáctkově (UTF-16LE). Do textu SQL tak nevstupuje
+-- nic jiného než znaky 0-9 a a-f a heslo samo smí obsahovat libovolné znaky.
+DECLARE @hesloAdmin     NVARCHAR(255) = CONVERT(NVARCHAR(255), 0x$(DEMO_ADMIN_PASSWORD_HEX));
+DECLARE @hesloSkolitel  NVARCHAR(255) = CONVERT(NVARCHAR(255), 0x$(DEMO_TRAINER_PASSWORD_HEX));
+DECLARE @hesloPracovnik NVARCHAR(255) = CONVERT(NVARCHAR(255), 0x$(DEMO_WORKER_PASSWORD_HEX));
+
 INSERT INTO #Zam (Cislo, Jmeno, Prijmeni, Heslo, Role, Email, Pozice, Stav) VALUES
-    (900001, N'Jana',     N'Dvořáková',   N'$(DEMO_ADMIN_PASSWORD)',   N'ADMIN',   N'admin@lms.inspiritenergy.cz',            N'Personalistka',            'A'),
-    (900002, N'Petr',     N'Novotný',     N'$(DEMO_TRAINER_PASSWORD)', N'TRAINER', N'skolitel.kvalita@lms.inspiritenergy.cz', N'Vedoucí kvality',          'A'),
-    (900003, N'Lucie',    N'Marková',     N'$(DEMO_TRAINER_PASSWORD)', N'TRAINER', N'skolitel.bozp@lms.inspiritenergy.cz',    N'Specialistka BOZP a IT',   'A'),
-    (100101, N'Martin',   N'Svoboda',     N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Operátor CNC',             'A'),
-    (100102, N'Tomáš',    N'Černý',       N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Operátor CNC',             'A'),
-    (100103, N'Eva',      N'Procházková', N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Kontrolorka kvality',      'A'),
-    (100104, N'Jiří',     N'Kučera',      N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Seřizovač',                'A'),
-    (100105, N'Kateřina', N'Veselá',      N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Metroložka',               'A'),
-    (100106, N'Pavel',    N'Horák',       N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Operátor EDM',             'A'),
-    (100107, N'Lenka',    N'Němcová',     N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Kontrolorka kvality',      'A'),
-    (100108, N'Michal',   N'Pokorný',     N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Operátor CNC',             'A'),
-    (100109, N'Veronika', N'Králová',     N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Skladnice',                'A'),
-    (100110, N'David',    N'Jelínek',     N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Údržbář',                  'A'),
-    (100111, N'Hana',     N'Růžičková',   N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Operátorka značení',       'A'),
-    (100112, N'Ondřej',   N'Fiala',       N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Technolog',                'A'),
-    (100113, N'Roman',    N'Bartoš',      N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Operátor CNC',             'O'),
-    (100114, N'Simona',   N'Urbanová',    N'$(DEMO_WORKER_PASSWORD)',  N'WORKER',  NULL, N'Kontrolorka kvality',      'S');
+    (900001, N'Jana',     N'Dvořáková',   @hesloAdmin,                 N'ADMIN',   N'admin@lms.inspiritenergy.cz',            N'Personalistka',            'A'),
+    (900002, N'Petr',     N'Novotný',     @hesloSkolitel,              N'TRAINER', N'skolitel@lms.inspiritenergy.cz',         N'Vedoucí kvality',          'A'),
+    (900003, N'Lucie',    N'Marková',     @hesloSkolitel,              N'TRAINER', N'skolitel.bozp@lms.inspiritenergy.cz',    N'Specialistka BOZP a IT',   'A'),
+    (100101, N'Martin',   N'Svoboda',     @hesloPracovnik,             N'WORKER',  N'pracovnik@lms.inspiritenergy.cz',        N'Operátor CNC',             'A'),
+    (100102, N'Tomáš',    N'Černý',       @hesloPracovnik,             N'WORKER',  NULL, N'Operátor CNC',             'A'),
+    (100103, N'Eva',      N'Procházková', @hesloPracovnik,             N'WORKER',  NULL, N'Kontrolorka kvality',      'A'),
+    (100104, N'Jiří',     N'Kučera',      @hesloPracovnik,             N'WORKER',  NULL, N'Seřizovač',                'A'),
+    (100105, N'Kateřina', N'Veselá',      @hesloPracovnik,             N'WORKER',  NULL, N'Metroložka',               'A'),
+    (100106, N'Pavel',    N'Horák',       @hesloPracovnik,             N'WORKER',  NULL, N'Operátor EDM',             'A'),
+    (100107, N'Lenka',    N'Němcová',     @hesloPracovnik,             N'WORKER',  NULL, N'Kontrolorka kvality',      'A'),
+    (100108, N'Michal',   N'Pokorný',     @hesloPracovnik,             N'WORKER',  NULL, N'Operátor CNC',             'A'),
+    (100109, N'Veronika', N'Králová',     @hesloPracovnik,             N'WORKER',  NULL, N'Skladnice',                'A'),
+    (100110, N'David',    N'Jelínek',     @hesloPracovnik,             N'WORKER',  NULL, N'Údržbář',                  'A'),
+    (100111, N'Hana',     N'Růžičková',   @hesloPracovnik,             N'WORKER',  NULL, N'Operátorka značení',       'A'),
+    (100112, N'Ondřej',   N'Fiala',       @hesloPracovnik,             N'WORKER',  NULL, N'Technolog',                'A'),
+    (100113, N'Roman',    N'Bartoš',      @hesloPracovnik,             N'WORKER',  NULL, N'Operátor CNC',             'O'),
+    (100114, N'Simona',   N'Urbanová',    @hesloPracovnik,             N'WORKER',  NULL, N'Kontrolorka kvality',      'S');
 
 INSERT INTO dbo.TabCisZam (Cislo, Jmeno, Prijmeni, Alias)
 SELECT Cislo, Jmeno, Prijmeni, Heslo FROM #Zam ORDER BY Cislo;
@@ -120,9 +131,10 @@ FROM #Zam z JOIN dbo.TabCisZam t ON t.Cislo = z.Cislo;
 
 -- Role a e-maily: stejnou cestou jako aplikace, tedy zápisem do pohledu.
 -- Trigger INSTEAD OF INSERT je uloží do InspiritUserAuth.
--- Záznam dostává jen administrátor a školitelé. Pracovník ho nepotřebuje (pohled
--- mu roli WORKER doplní sám) a produkční tabulka má na sloupci email obyčejné
--- omezení UNIQUE, které v SQL Serveru připustí jediný řádek bez e-mailu.
+-- Záznam dostávají jen účty s e-mailem: administrátor, školitelé a předváděcí
+-- pracovník 100101. Ostatní pracovníci ho nepotřebují (pohled jim roli WORKER
+-- doplní sám) a produkční tabulka má na sloupci email obyčejné omezení UNIQUE,
+-- které v SQL Serveru připustí jediný řádek bez e-mailu.
 INSERT INTO dbo.InspiritCisZam (ID, Cislo, role, email, Alias, Jmeno, Prijmeni, createdAt, updatedAt)
 SELECT t.ID, z.Cislo, z.Role, z.Email, z.Heslo, z.Jmeno, z.Prijmeni, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
 FROM #Zam z JOIN dbo.TabCisZam t ON t.Cislo = z.Cislo
