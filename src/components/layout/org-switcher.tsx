@@ -18,7 +18,7 @@ export function OrgSwitcher() {
           size='lg'
           className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-15'
         >
-          <span className='flex items-center rounded-md group-data-[collapsible=icon]:hidden dark:bg-white dark:px-2 dark:py-1'>
+          <span className='flex -translate-y-[5px] items-center rounded-md group-data-[collapsible=icon]:hidden dark:bg-white dark:px-2 dark:py-1'>
             <Image
               src='/atc-space-logo.png'
               alt='ATC Space'

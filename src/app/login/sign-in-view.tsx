@@ -107,12 +107,12 @@ export default function SignInViewPage() {
       </Link>
 
       {/* levý panel – světlý v obou motivech, logo je kreslené pro světlé pozadí */}
-      <div className='relative hidden h-full flex-col items-center justify-center gap-12 overflow-hidden border-r bg-gradient-to-b from-white to-[#e4edf4] p-10 lg:flex'>
+      <div className='relative hidden h-full flex-col items-center justify-center gap-16 overflow-hidden border-r bg-gradient-to-b from-white to-[#e4edf4] p-10 lg:flex'>
         <Image
           src='/atc-space-logo-vertical.png'
           alt='ATC Space'
-          width={240}
-          height={344}
+          width={200}
+          height={287}
           priority
         />
         <h1
@@ -125,7 +125,7 @@ export default function SignInViewPage() {
             marginRight: '-0.45em'
           }}
         >
-          AeroLMS
+          ATC-LMS
         </h1>
       </div>
 
