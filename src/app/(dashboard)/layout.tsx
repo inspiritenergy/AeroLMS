@@ -7,8 +7,8 @@ import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
-  title: 'AeroLMS',
-  description: 'AeroLMS školící systém'
+  title: 'ATC-LMS',
+  description: 'ATC-LMS školící systém'
 };
 
 export default async function DashboardLayout({

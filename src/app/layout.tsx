@@ -15,7 +15,7 @@ const META_THEME_COLORS = {
 };
 
 export const metadata: Metadata = {
-  title: 'AeroLMS',
+  title: 'ATC-LMS',
   description: ''
 };
 

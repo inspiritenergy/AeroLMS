@@ -15,7 +15,7 @@ export function useBreadcrumbs() {
   const breadcrumbs = useMemo(() => {
     // Always start with AeroLMS
     const baseBreadcrumb: BreadcrumbItem = {
-      title: 'AeroLMS',
+      title: 'ATC-LMS',
       link: '/'
     };
 

@@ -122,7 +122,7 @@ export default async function DynamicPage({ params }: PageProps) {
 
           <div className='bg-card rounded-lg border p-6'>
             <h2 className='mb-4 text-xl font-semibold'>
-              Vítejte v systému AeroLMS
+              Vítejte v systému ATC-LMS
             </h2>
             <p className='text-muted-foreground'>
               Zde najdete přehled všech vašich školení a certifikací. V levém
@@ -352,7 +352,7 @@ export async function generateMetadata({
 
   if (node.length === 0) {
     return {
-      title: 'AeroLMS',
+      title: 'ATC-LMS',
       description: 'Systém pro správu školení'
     };
   }
@@ -371,7 +371,7 @@ export async function generateMetadata({
   const displayName = training ? training.name : 'Stránka';
 
   return {
-    title: `${displayName} | AeroLMS`,
+    title: `${displayName} | ATC-LMS`,
     description: `Informace o ${displayName}`
   };
 }

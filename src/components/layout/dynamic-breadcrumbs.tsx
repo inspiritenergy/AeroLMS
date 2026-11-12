@@ -25,7 +25,7 @@ export function DynamicBreadcrumbs() {
   useEffect(() => {
     const fetchBreadcrumbs = async () => {
       // Always start with AeroLMS
-      const breadcrumbs: BreadcrumbItem[] = [{ title: 'AeroLMS', link: '/' }];
+      const breadcrumbs: BreadcrumbItem[] = [{ title: 'ATC-LMS', link: '/' }];
 
       // Parse the pathname
       const segments = pathname.split('/').filter(Boolean);

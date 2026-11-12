@@ -5,8 +5,8 @@ import { authOptions } from '@/lib/auth';
 import SignInViewPage from './sign-in-view';
 
 export const metadata: Metadata = {
-  title: 'Authentication | Sign In',
-  description: 'Sign In page for authentication.'
+  title: 'Přihlášení | ATC-LMS',
+  description: 'Přihlášení do školicího systému ATC-LMS'
 };
 
 export default async function Page() {

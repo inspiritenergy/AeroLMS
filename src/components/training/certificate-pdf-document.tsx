@@ -267,7 +267,7 @@ export const CertificatePDFDocument: React.FC<CertificatePDFDocumentProps> = ({
             Tento certifikát je oficiálním dokladem o absolvování školení.
           </Text>
           <Text style={styles.footerText}>
-            Generováno systémem AeroLMS dne {formatDate(new Date().toISOString())}
+            Generováno systémem ATC-LMS dne {formatDate(new Date().toISOString())}
           </Text>
         </View>
       </Page>

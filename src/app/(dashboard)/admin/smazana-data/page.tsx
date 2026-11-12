@@ -5,7 +5,7 @@ import { isAdmin } from '@/types/roles';
 import DeletedDataClient from './deleted-data-client';
 
 export const metadata = {
-  title: 'Správa smazaných dat | AeroLMS Admin',
+  title: 'Správa smazaných dat | ATC-LMS Admin',
   description: 'Správa soft-deleted školení a souvisejících dat'
 };
 

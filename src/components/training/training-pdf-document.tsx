@@ -562,7 +562,7 @@ export function TrainingPDFDocument({
 
         {/* Footer */}
         <Text style={styles.footer}>
-          © {new Date().getFullYear()} AeroLMS - Systém školení zaměstnanců
+          © {new Date().getFullYear()} ATC-LMS - Systém školení zaměstnanců
         </Text>
 
         {/* Page Numbers */}
