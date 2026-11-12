@@ -106,17 +106,29 @@ export default function SignInViewPage() {
         Login
       </Link>
 
-      {/* levý panel – světlý v obou motivech, logo je kreslené pro světlé pozadí */}
-      <div className='relative hidden h-full flex-col items-center justify-center gap-16 overflow-hidden border-r bg-gradient-to-b from-white to-[#e4edf4] p-10 lg:flex'>
+      {/* levý panel – titulní obrázek webu ATC Space s modrým překryvem, logo na bílé kartě */}
+      <div className='relative hidden h-full flex-col items-center justify-center gap-16 overflow-hidden bg-[#002c51] p-10 lg:flex'>
         <Image
-          src='/atc-space-logo-vertical.png'
-          alt='ATC Space'
-          width={200}
-          height={287}
+          src='/atc-space-hero.jpg'
+          alt=''
+          fill
           priority
+          // Výřez se řídí výškou panelu, ne šířkou; zmenšenina podle šířky by byla rozostřená.
+          unoptimized
+          className='object-cover object-[62%_center]'
         />
+        <div className='absolute inset-0 bg-gradient-to-b from-[rgba(0,44,81,0.55)] to-[rgba(0,44,81,0.75)]' />
+        <div className='relative z-10 rounded-3xl bg-white px-12 py-10 shadow-xl'>
+          <Image
+            src='/atc-space-logo-vertical.png'
+            alt='ATC Space'
+            width={200}
+            height={287}
+            priority
+          />
+        </div>
         <h1
-          className='text-3xl text-[#006090] uppercase'
+          className='relative z-10 text-3xl text-white uppercase'
           style={{
             fontFamily: 'OPTIBankGothic-Medium, Arial, sans-serif',
             fontWeight: 500,
