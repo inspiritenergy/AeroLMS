@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/sidebar';
 
 // Značka nahoře v postranním panelu: široké logo, ve sbaleném panelu jen znak.
-// Logo je kreslené pro světlé pozadí, v tmavém motivu proto leží na bílé podložce.
+// Logo je kreslené pro světlé pozadí, v tmavém motivu se proto vykresluje bíle (filtr nad týmž souborem).
 export function OrgSwitcher() {
   return (
     <SidebarMenu>
@@ -18,13 +18,13 @@ export function OrgSwitcher() {
           size='lg'
           className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-15'
         >
-          <span className='flex -translate-y-[5px] items-center rounded-md group-data-[collapsible=icon]:hidden dark:bg-white dark:px-2 dark:py-1'>
+          <span className='flex -translate-y-[5px] items-center group-data-[collapsible=icon]:hidden'>
             <Image
               src='/atc-space-logo.png'
               alt='ATC Space'
               width={320}
               height={100}
-              className='h-11 w-auto dark:h-9'
+              className='h-11 w-auto dark:brightness-0 dark:invert'
               priority
             />
           </span>
@@ -33,7 +33,7 @@ export function OrgSwitcher() {
             alt='ATC Space'
             width={32}
             height={32}
-            className='hidden size-8 group-data-[collapsible=icon]:block'
+            className='hidden size-8 group-data-[collapsible=icon]:block dark:brightness-0 dark:invert'
           />
         </SidebarMenuButton>
       </SidebarMenuItem>

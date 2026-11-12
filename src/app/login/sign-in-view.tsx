@@ -144,13 +144,13 @@ export default function SignInViewPage() {
       <div className='flex h-full items-center justify-center p-4 lg:p-8'>
         <div className='flex w-full max-w-md flex-col items-center justify-center space-y-6'>
           {/* Na úzkých obrazovkách se levý panel nevykresluje, značku nese široké logo nad formulářem */}
-          <div className='rounded-md lg:hidden dark:bg-white dark:px-3 dark:py-2'>
+          <div className='lg:hidden'>
             <Image
               src='/atc-space-logo.png'
               alt='ATC Space'
               width={320}
               height={100}
-              className='h-14 w-auto'
+              className='h-14 w-auto dark:brightness-0 dark:invert'
               priority
             />
           </div>
