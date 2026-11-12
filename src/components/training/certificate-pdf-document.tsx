@@ -262,7 +262,7 @@ export const CertificatePDFDocument: React.FC<CertificatePDFDocumentProps> = ({
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.companyName}>Aerotech Czech s.r.o.</Text>
+          <Text style={styles.companyName}>ATC Space</Text>
           <Text style={styles.footerText}>
             Tento certifikát je oficiálním dokladem o absolvování školení.
           </Text>

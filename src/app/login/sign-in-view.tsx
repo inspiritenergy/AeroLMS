@@ -106,44 +106,44 @@ export default function SignInViewPage() {
         Login
       </Link>
 
-      {/* levý panel */}
-      <div className='relative hidden h-full flex-col overflow-hidden bg-zinc-900 p-10 text-white lg:flex dark:border-r'>
-        {/* Background image with Next.js Image */}
+      {/* levý panel – světlý v obou motivech, logo je kreslené pro světlé pozadí */}
+      <div className='relative hidden h-full flex-col items-center justify-center gap-12 overflow-hidden border-r bg-gradient-to-b from-white to-[#e4edf4] p-10 lg:flex'>
         <Image
-          src='/building.jpg'
-          alt='Building background'
-          fill
+          src='/atc-space-logo-vertical.png'
+          alt='ATC Space'
+          width={240}
+          height={344}
           priority
-          className='object-cover'
-          sizes='50vw'
         />
-        {/* Gradient overlay */}
-        <div className='absolute inset-0 bg-gradient-to-b from-[rgba(0,44,81,0.9)] to-[rgba(36,69,122,0.8)]' />
-        <div className='relative z-20 flex h-full w-full flex-col items-center justify-center'>
-          <Image
-            src='/aerotech-logo.png'
-            alt='AeroTech Logo'
-            width={150}
-            height={138}
-            className='absolute top-[15%] left-1/2 -translate-x-1/2 transform'
-            priority
-          />
-          <h1
-            className='text-5xl tracking-[0.2em] text-white uppercase'
-            style={{
-              fontFamily: 'OPTIBankGothic-Medium, Arial, sans-serif',
-              fontWeight: 500,
-              letterSpacing: '0.45em'
-            }}
-          >
-            AeroLMS
-          </h1>
-        </div>
+        <h1
+          className='text-3xl text-[#006090] uppercase'
+          style={{
+            fontFamily: 'OPTIBankGothic-Medium, Arial, sans-serif',
+            fontWeight: 500,
+            letterSpacing: '0.45em',
+            // prostrkání přidává mezeru i za poslední písmeno; bez vyrovnání by nadpis nebyl na středu
+            marginRight: '-0.45em'
+          }}
+        >
+          AeroLMS
+        </h1>
       </div>
 
       {/* pravý panel – vlastní přihlášení */}
       <div className='flex h-full items-center justify-center p-4 lg:p-8'>
         <div className='flex w-full max-w-md flex-col items-center justify-center space-y-6'>
+          {/* Na úzkých obrazovkách se levý panel nevykresluje, značku nese široké logo nad formulářem */}
+          <div className='rounded-md lg:hidden dark:bg-white dark:px-3 dark:py-2'>
+            <Image
+              src='/atc-space-logo.png'
+              alt='ATC Space'
+              width={320}
+              height={100}
+              className='h-14 w-auto'
+              priority
+            />
+          </div>
+
           {/* Zobrazení obecných chyb */}
           {generalError && (
             <Alert variant='destructive' className='mb-4'>
@@ -203,7 +203,7 @@ export default function SignInViewPage() {
           </div>
 
           <p className='text-muted-foreground px-8 text-center text-sm'>
-            © 2025 Aerotech Czech s.r.o. Všechna práva vyhrazena.
+            © 2025 ATC Space. Všechna práva vyhrazena.
           </p>
         </div>
       </div>

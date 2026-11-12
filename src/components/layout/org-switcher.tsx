@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import * as React from 'react';
 
 import {
   SidebarMenu,
@@ -9,47 +8,33 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar';
 
-interface Tenant {
-  id: string;
-  name: string;
-}
-
-export function OrgSwitcher({
-  tenants,
-  defaultTenant
-}: {
-  tenants: Tenant[];
-  defaultTenant: Tenant;
-}) {
-  const [selectedTenant] = React.useState<Tenant | undefined>(
-    defaultTenant || (tenants.length > 0 ? tenants[0] : undefined)
-  );
-
-  if (!selectedTenant) {
-    return null;
-  }
+// Značka nahoře v postranním panelu: široké logo, ve sbaleném panelu jen znak.
+// Logo je kreslené pro světlé pozadí, v tmavém motivu proto leží na bílé podložce.
+export function OrgSwitcher() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton
           size='lg'
-          className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+          className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-15'
         >
-          <div className='flex aspect-square size-8 items-center justify-center rounded-lg'>
+          <span className='flex items-center rounded-md group-data-[collapsible=icon]:hidden dark:bg-white dark:px-2 dark:py-1'>
             <Image
-              src='/favicon-32x32.png'
-              alt='AeroLMS Logo'
-              width={32}
-              height={32}
-              className='rounded-lg'
+              src='/atc-space-logo.png'
+              alt='ATC Space'
+              width={320}
+              height={100}
+              className='h-11 w-auto dark:h-9'
+              priority
             />
-          </div>
-          <div className='mt-1 flex flex-col leading-none'>
-            <span className='font-semibold'>AeroLMS</span>
-            <span className='text-muted-foreground text-xs'>
-              {selectedTenant.name}
-            </span>
-          </div>
+          </span>
+          <Image
+            src='/atc-space-emblem.png'
+            alt='ATC Space'
+            width={32}
+            height={32}
+            className='hidden size-8 group-data-[collapsible=icon]:block'
+          />
         </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>

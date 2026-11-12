@@ -42,7 +42,6 @@ import {
   IconChevronsDown,
   IconLogout,
   IconMoon,
-  IconPhotoUp,
   IconSun,
   IconUserCircle
 } from '@tabler/icons-react';
@@ -54,14 +53,6 @@ import { Icons } from '../ui/icons';
 import { OrgSwitcher } from './org-switcher';
 
 import { useSession, signOut } from 'next-auth/react';
-
-export const company = {
-  name: 'Aerotech Czech s.r.o.',
-  logo: IconPhotoUp,
-  plan: 'Enterprise'
-};
-
-const tenants = [{ id: '1', name: 'Aerotech Czech s.r.o.' }];
 
 export default function AppSidebar() {
   const pathname = usePathname();
@@ -81,8 +72,6 @@ export default function AppSidebar() {
   const userRole = session?.user?.role || ROLES.WORKER;
   const hasAdminAccess = isAdmin(userRole);
   const hasTrainerAccess = isTrainer(userRole);
-
-  const activeTenant = tenants[0];
 
   // Načti školení z API
   React.useEffect(() => {
@@ -176,7 +165,7 @@ export default function AppSidebar() {
     <Sidebar collapsible='icon'>
       {/* ---------- HLAVIČKA ---------- */}
       <SidebarHeader>
-        <OrgSwitcher tenants={tenants} defaultTenant={activeTenant} />
+        <OrgSwitcher />
       </SidebarHeader>
 
       {/* ---------- OBSAH ---------- */}
