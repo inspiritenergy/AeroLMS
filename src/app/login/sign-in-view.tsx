@@ -106,7 +106,7 @@ export default function SignInViewPage() {
         Login
       </Link>
 
-      {/* levý panel – titulní obrázek webu ATC Space s modrým překryvem, logo na bílé kartě */}
+      {/* levý panel – titulní obrázek webu ATC Space s modrým překryvem, logo v bílém provedení jako na webu */}
       <div className='relative hidden h-full flex-col items-center justify-center gap-16 overflow-hidden bg-[#002c51] p-10 lg:flex'>
         <Image
           src='/atc-space-hero.jpg'
@@ -117,16 +117,15 @@ export default function SignInViewPage() {
           unoptimized
           className='object-cover object-[62%_center]'
         />
-        <div className='absolute inset-0 bg-gradient-to-b from-[rgba(0,44,81,0.55)] to-[rgba(0,44,81,0.75)]' />
-        <div className='relative z-10 rounded-3xl bg-white px-12 py-10 shadow-xl'>
-          <Image
-            src='/atc-space-logo-vertical.png'
-            alt='ATC Space'
-            width={200}
-            height={287}
-            priority
-          />
-        </div>
+        <div className='absolute inset-0 bg-gradient-to-b from-[rgba(0,44,81,0.62)] to-[rgba(0,44,81,0.8)]' />
+        <Image
+          src='/atc-space-logo-vertical-white.png'
+          alt='ATC Space'
+          width={200}
+          height={287}
+          className='relative z-10'
+          priority
+        />
         <h1
           className='relative z-10 text-3xl text-white uppercase'
           style={{
